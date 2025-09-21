@@ -1,12 +1,25 @@
-const { Queue } = require('bullmq');
+const { Queue, Worker } = require('bullmq');
+const IORedis = require('ioredis');
 
-// This connects to your local Redis instance.
-const redisConnection = {
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: process.env.REDIS_PORT || 6379,
+// This is the critical fix. It tells IORedis to use the full Render Redis URL
+// when it's available. If process.env.REDIS_URL is not set (like on your local machine),
+// it will automatically fall back to the default 'localhost:6379'.
+const connection = new IORedis(process.env.REDIS_URL, {
+    // This option is required for BullMQ to work correctly on Render.
+    maxRetriesPerRequest: null 
+});
+
+// Create and export the queue.
+const analysisQueue = new Queue('career-analysis', { connection });
+
+// A helper function to create a worker. This prevents you from having to
+// duplicate the connection logic in your worker.js file.
+const createWorker = (processFn) => {
+    return new Worker('career-analysis', processFn, { connection });
 };
 
-// Create and export the queue. We'll use this in the controller and the worker.
-const analysisQueue = new Queue('career-analysis', { connection: redisConnection });
+module.exports = {
+    analysisQueue,
+    createWorker,
+};
 
-module.exports = { analysisQueue };
