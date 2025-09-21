@@ -2,8 +2,8 @@ const { Queue, Worker } = require('bullmq');
 const IORedis = require('ioredis');
 
 // This is the critical fix. It tells IORedis to use the full Render Redis URL
-// when it's available. If process.env.REDIS_URL is not set (like on your local machine),
-// it will automatically fall back to the default 'localhost:6379'.
+// when the environment variable is available. If process.env.REDIS_URL is not set
+// (like on your local machine), it will automatically fall back to the default 'localhost:6379'.
 const connection = new IORedis(process.env.REDIS_URL, {
     // This option is required for BullMQ to work correctly on Render.
     maxRetriesPerRequest: null 
@@ -22,4 +22,3 @@ module.exports = {
     analysisQueue,
     createWorker,
 };
-
