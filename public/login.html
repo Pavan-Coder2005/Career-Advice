@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Career Compass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2; --secondary-color: #50E3C2; --dark-blue: #0A2540;
+            --light-gray: #f4f7fa; --text-color: #333; --border-color: #e6e6e6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--text-color); display: grid; place-items: center; min-height: 100vh; }
+        .login-container { width: 100%; max-width: 400px; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); text-align: center; }
+        .title { font-size: 24px; font-weight: 700; color: var(--dark-blue); margin-bottom: 10px; }
+        h1 { font-size: 20px; margin-bottom: 30px; color: #777; font-weight: 400; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-blue); }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 16px; transition: all 0.3s ease; }
+        input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
+        button { width: 100%; margin-top: 15px; padding: 14px; border: none; background: var(--primary-color); color: #fff; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #357ac4; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .signup-link { display: block; text-align: center; margin-top: 25px; color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .signup-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="title">Career Compass</div>
+        <h1>Welcome back! Please login.</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" required>
+            </div>
+            <button id="loginButton" type="submit">Login</button>
+        </form>
+        <a href="signup.html" class="signup-link">Don't have an account? Sign Up</a>
+    </div>
+
+    <script>
+    const loginForm = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = { email: emailInput.value.trim(), password: passwordInput.value };
+
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
+
+        try {
+            // --- Step 1: Log in and get the token ---
+            const loginRes = await fetch("http://localhost:3500/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            
+            const loginResult = await loginRes.json();
+            if (!loginRes.ok) {
+                throw new Error(loginResult.msg || "Login failed");
+            }
+
+            const token = loginResult.token;
+            localStorage.setItem("authToken", token);
+
+            // --- Step 2: Check the user's profile status ---
+            loginButton.textContent = 'Checking profile...';
+            
+            const statusRes = await fetch("http://localhost:3500/profile/status", {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const statusResult = await statusRes.json();
+            if (!statusRes.ok) {
+                throw new Error(statusResult.msg || "Could not check profile status");
+            }
+
+            // --- Step 3: Redirect based on the status ---
+            if (statusResult.hasCompletedProfile) {
+                // If profile is complete (AI analysis is done), go to the dashboard
+                window.location.href = "dashboard.html";
+            } else {
+                // **THIS IS THE FIX**
+                // If profile is NOT complete, go to the page where they can set it up
+                window.location.href = "onboarding.html"; // Make sure this is the correct filename
+            }
+
+        } catch (err) {
+            console.error("Login Error:", err);
+            alert(`Login failed: ${err.message}`);
+            loginButton.disabled = false;
+            loginButton.textContent = 'Login';
+        }
+    });
+</script>

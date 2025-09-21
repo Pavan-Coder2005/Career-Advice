@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Career Compass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2; --dark-blue: #0A2540;
+            --light-gray: #f4f7fa; --text-color: #333; --border-color: #e6e6e6;
+        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); display: grid; place-items: center; min-height: 100vh; }
+        .signup-container { width: 100%; max-width: 400px; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); text-align: center; }
+        .title { font-size: 24px; font-weight: 700; color: var(--dark-blue); margin-bottom: 10px; }
+        h1 { font-size: 20px; margin-bottom: 30px; color: #777; font-weight: 400; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-blue); }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 16px; transition: all 0.3s ease; }
+        input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
+        button { width: 100%; margin-top: 15px; padding: 14px; border: none; background: var(--primary-color); color: #fff; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #357ac4; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .login-link { display: block; text-align: center; margin-top: 25px; color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .login-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="title">Career Compass</div>
+        <h1>Create your account.</h1>
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" required>
+            </div>
+            <button id="signupButton" type="submit">Sign Up</button>
+        </form>
+        <a href="login.html" class="login-link">Already have an account? Login</a>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById("signupForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const signupButton = document.getElementById("signupButton");
+
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const payload = { email: emailInput.value.trim(), password: passwordInput.value };
+            
+            if (!payload.email || !payload.password) {
+                alert("Please fill in both fields.");
+                return;
+            }
+
+            signupButton.disabled = true;
+            signupButton.textContent = 'Creating account...';
+
+            try {
+                const res = await fetch("http://localhost:3500/register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("Registration successful! Please log in to continue.");
+                    // --- REDIRECT TO LOGIN PAGE ---
+                    window.location.href = "login.html"; 
+                } else {
+                    throw new Error(data.msg || "Signup failed. Please try again.");
+                }
+            } catch (err) {
+                console.error("Signup Error:", err);
+                alert(`An error occurred: ${err.message}`);
+                signupButton.disabled = false;
+                signupButton.textContent = 'Sign Up';
+            }
+        });
+    </script>
+</body>
+</html>

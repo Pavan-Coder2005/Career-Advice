@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Career Profile - Career Compass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --dark-blue: #0A2540;
+            --light-gray: #f4f7fa;
+            --border-color: #e6e6e6;
+            --text-color: #333;
+            --sidebar-bg: #f8faff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-gray); color: var(--text-color); display: grid; place-items: center; min-height: 100vh; padding: 20px; }
+        .wizard-container { background-color: #fff; border-radius: 15px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; display: flex; overflow: hidden; }
+        .wizard-sidebar { background-color: var(--sidebar-bg); padding: 40px; width: 300px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+        .sidebar-step { display: none; }
+        .sidebar-step.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        .sidebar-step .icon { font-size: 48px; margin-bottom: 20px; }
+        .sidebar-step h3 { color: var(--dark-blue); margin-bottom: 10px; }
+        .sidebar-step p { color: #777; font-size: 14px; line-height: 1.6; }
+        .wizard-content { padding: 20px 30px; flex-grow: 1; }
+        .wizard-header { text-align: center; padding: 20px 0; }
+        .wizard-header h1 { font-size: 24px; color: var(--dark-blue); }
+        #progress-bar-container { width: 100%; background-color: #e0e0e0; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+        #progress-bar { width: 20%; height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); transition: width 0.4s ease; }
+        .wizard-body { padding: 20px 0; min-height: 450px; position: relative; overflow: hidden; }
+        .form-step { position: absolute; width: 100%; top: 0; left: 0; visibility: hidden; opacity: 0; transform: translateX(50px); transition: visibility 0.5s, opacity 0.5s, transform 0.5s; }
+        .form-step.active { visibility: visible; opacity: 1; transform: translateX(0); }
+        .form-step.inactive { transform: translateX(-50px); }
+        .form-step h2 { font-size: 22px; color: var(--dark-blue); margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark-blue); }
+        .form-group input[type="text"], .form-group input[type="url"], .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 16px; transition: border-color 0.3s ease; }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); }
+        .radio-group label { display: block; background: #f9f9f9; padding: 15px 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; }
+        .radio-group input[type="radio"] { display: none; }
+        .radio-group label:hover { border-color: var(--primary-color); }
+        .radio-group input[type="radio"]:checked + label { border-color: var(--primary-color); background-color: #eff6ff; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .file-upload-label { display: inline-block; padding: 10px 20px; background-color: #f0f0f0; border: 1px dashed var(--border-color); border-radius: 8px; cursor: pointer; transition: background-color 0.3s; }
+        .file-upload-label:hover { background-color: #e9e9e9; }
+        .wizard-footer { display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .btn { padding: 12px 30px; border: none; border-radius: 25px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .btn-prev { background-color: #e0e0e0; color: #333; }
+        .btn-prev:hover { background-color: #ccc; }
+        .btn-next { background-color: var(--primary-color); color: #fff; }
+        .btn-next:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        #submitBtn { background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); color: #fff; }
+        #submitBtn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 768px) { .wizard-container { flex-direction: column; } .wizard-sidebar { display: none; } .wizard-content { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-sidebar">
+            <div class="sidebar-step active" data-step="1"><div class="icon">🎓</div><h3>Start with Your Foundation</h3><p>Your academic journey provides the first clues to your ideal career path.</p></div>
+            <div class="sidebar-step" data-step="2"><div class="icon">❤️</div><h3>Discover Your Passions</h3><p>What you love doing is a powerful indicator of a fulfilling future.</p></div>
+            <div class="sidebar-step" data-step="3"><div class="icon">🧠</div><h3>Understand Your Style</h3><p>Knowing how you work best helps find the perfect company culture for you.</p></div>
+            <div class="sidebar-step" data-step="4"><div class="icon">🛠️</div><h3>Showcase Your Skills</h3><p>Your projects and practical skills demonstrate your capabilities to the world.</p></div>
+            <div class="sidebar-step" data-step="5"><div class="icon">🚀</div><h3>Define Your Goals</h3><p>Your aspirations will guide our AI to find a career that grows with you.</p></div>
+        </div>
+        <div class="wizard-content">
+            <div class="wizard-header"><h1>Create Your Career Profile</h1><div id="progress-bar-container"><div id="progress-bar"></div></div></div>
+            <form id="profileForm" class="wizard-body" novalidate>
+                <div class="form-step active" data-step="1"><h2>Academic Deeper Dive</h2><div class="form-group"><label for="education">Highest Qualification</label><select id="education" name="education" required><option value="">-- Select --</option><option value="12th">Class 12th / PUC</option><option value="diploma">Diploma</option><option value="undergrad">Undergraduate</option><option value="postgrad">Postgraduate</option></select></div><div class="form-group"><label for="stream">Field of Study</label><input type="text" id="stream" name="stream" placeholder="e.g., Commerce, B.Tech in IT" required></div><div class="form-group"><label for="certs">Online Courses or Certifications (Optional)</label><input type="text" id="certs" name="certs" placeholder="e.g., NPTEL Python, Coursera Marketing"></div></div>
+                <div class="form-step" data-step="2"><h2>Passion & Inspiration</h2><div class="form-group"><label for="interests">What topics do you explore for fun? What problems do you wish you could solve?</label><textarea id="interests" name="interests" placeholder="e.g., I love watching videos about the latest gadgets, reading about financial markets..." required></textarea></div><div class="form-group"><label for="admires">Which companies or role models inspire you? (Optional)</label><input type="text" id="admires" name="admires" placeholder="e.g., Google, Zerodha, Mr. N. R. Narayana Murthy"></div></div>
+                <div class="form-step" data-step="3"><h2>Work Style & Environment</h2><div class="form-group"><label>You work best in an environment that is:</label><div class="radio-group"><input type="radio" id="q1a" name="work_pace" value="fast" required><label for="q1a">A) Fast-paced and constantly changing.</label><input type="radio" id="q1b" name="work_pace" value="steady"><label for="q1b">B) Steady, structured, and predictable.</label></div></div><div class="form-group"><label>You are more drawn to a role in:</label><div class="radio-group"><input type="radio" id="q2a" name="risk_tolerance" value="startup" required><label for="q2a">A) An innovative startup where you can take big risks.</label><input type="radio" id="q2b" name="risk_tolerance" value="stable_company"><label for="q2b">B) A well-established company with a stable career path.</label></div></div></div>
+                <div class="form-step" data-step="4"><h2>Practical Skills Showcase</h2><div class="form-group"><label for="skills">List your top skills (technical or soft), separated by commas.</label><input type="text" id="skills" name="skills" placeholder="e.g., Python, Public Speaking, Teamwork" required></div><div class="form-group"><label for="project">Describe a project you're proud of (academic, personal, or professional).</label><textarea id="project" name="project" placeholder="e.g., I built a small e-commerce website for a local shop..." required></textarea></div><div class="form-group"><label for="resume">Upload Resume (Optional)</label><input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="display: none;"><label for="resume" class="file-upload-label">Choose File...</label><span id="fileName"></span></div></div>
+                <div class="form-step" data-step="5"><h2>Career & Lifestyle Goals</h2><div class="form-group"><label for="industries">Are there any specific industries you're interested in?</label><input type="text" id="industries" name="industries" placeholder="e.g., FinTech, Healthcare, Education Technology"></div><div class="form-group"><label>In your ideal career, what is most important to you?</label><div class="radio-group"><input type="radio" id="q3a" name="motivation" value="impact" required><label for="q3a">A) Making a positive impact on society.</label><input type="radio" id="q3b" name="motivation" value="growth"><label for="q3b">B) High salary and fast career growth.</label><input type="radio" id="q3c" name="motivation" value="balance"><label for="q3c">C) Strong work-life balance and stability.</label></div></div></div>
+            </form>
+            <div class="wizard-footer"><button class="btn btn-prev" id="prevBtn" style="display: none;">Previous</button><button class="btn btn-next" id="nextBtn">Next</button><button class="btn" id="submitBtn" style="display: none;">Analyze My Profile & Find My Career Path</button></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('You must be logged in to build your profile. Redirecting...');
+                window.location.href = 'login.html';
+                return;
+            }
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSteps = document.querySelectorAll('.form-step');
+            const sidebarSteps = document.querySelectorAll('.sidebar-step');
+            const progressBar = document.getElementById('progress-bar');
+            const form = document.getElementById('profileForm');
+            let currentStep = 1;
+            const totalSteps = formSteps.length;
+            const resumeInput = document.getElementById('resume');
+            const fileNameSpan = document.getElementById('fileName');
+            resumeInput.addEventListener('change', () => { fileNameSpan.textContent = resumeInput.files[0] ? resumeInput.files[0].name : ''; });
+            nextBtn.addEventListener('click', () => { if (validateStep(currentStep)) { if (currentStep < totalSteps) { formSteps[currentStep - 1].classList.add('inactive'); currentStep++; updateWizard(); } } else { alert('Please fill out all required fields in this step.'); } });
+            prevBtn.addEventListener('click', () => { if (currentStep > 1) { formSteps[currentStep - 1].classList.add('inactive'); currentStep--; updateWizard(); } });
+            submitBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (!validateStep(currentStep)) {
+                    alert('Please fill out all required fields before submitting.');
+                    return;
+                }
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Analyzing...';
+                const formData = new FormData(form);
+                try {
+                    // --- THE FIX IS HERE ---
+                    // The URL now correctly points to port 3500, which matches your server log.
+                    const response = await fetch('http://localhost:3500/profile/submit', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (!response.ok) { throw new Error(result.msg || 'Failed to submit profile.'); }
+                    console.log('Profile submission successful:', result);
+                    alert("Profile analyzed! We are now generating your personalized dashboard.");
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    console.error('Error submitting profile:', error);
+                    alert(`An error occurred: ${error.message}`);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Analyze My Profile & Find My Career Path';
+                }
+            });
+            function validateStep(step) {
+                const currentFormStep = document.querySelector(`.form-step[data-step="${step}"]`);
+                const requiredInputs = currentFormStep.querySelectorAll('[required]');
+                let isValid = true;
+                for (const input of requiredInputs) { if (input.type === 'radio') { const radioGroup = document.getElementsByName(input.name); if (![...radioGroup].some(r => r.checked)) { isValid = false; break; } } else if (!input.value.trim()) { isValid = false; break; } }
+                return isValid;
+            }
+            function updateWizard() {
+                formSteps.forEach((step, index) => { step.classList.toggle('active', index + 1 === currentStep); step.classList.remove('inactive'); });
+                sidebarSteps.forEach((step, index) => { step.classList.toggle('active', index + 1 === currentStep); });
+                updateButtons();
+                updateProgressBar();
+            }
+            function updateButtons() {
+                prevBtn.style.display = currentStep > 1 ? 'inline-block' : 'none';
+                nextBtn.style.display = currentStep < totalSteps ? 'inline-block' : 'none';
+                submitBtn.style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+            }
+            function updateProgressBar() { const progressPercentage = (currentStep / totalSteps) * 100; progressBar.style.width = progressPercentage + '%'; }
+            updateWizard();
+        });
+    </script>
+</body>
+</html>

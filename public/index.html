@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disha AI - Your Personalized Career Advisor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS STYLES (No changes needed) --- */
+        :root { --primary-color: #4A90E2; --secondary-color: #50E3C2; --dark-blue: #0A2540; --light-gray: #f4f7fa; --text-color: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; color: var(--text-color); background-color: #fff; }
+        .container { background: linear-gradient(rgba(10, 37, 64, 0.8), rgba(10, 37, 64, 0.8)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=2670&auto=format&fit=crop') no-repeat center center/cover; min-height: 100vh; padding: 0 8%; color: white; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 0; }
+        .logo { font-size: 24px; font-weight: 700; }
+        .nav-links { list-style: none; display: flex; align-items: center; gap: 30px; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 400; transition: opacity 0.3s ease; }
+        .nav-links a:hover { opacity: 0.8; }
+        .btn-secondary { border: 1px solid var(--secondary-color); padding: 10px 20px; border-radius: 25px; color: var(--secondary-color); background: transparent; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 16px; }
+        .btn-secondary:hover { background-color: var(--secondary-color); color: var(--dark-blue); opacity: 1; }
+        .hero { text-align: center; padding: 100px 0; animation: fadeIn 1s ease-in-out; }
+        .hero h1 { font-size: 52px; font-weight: 700; margin-bottom: 20px; }
+        .hero .subtitle { font-size: 18px; font-weight: 300; max-width: 600px; margin: 0 auto 40px; line-height: 1.6; }
+        .btn-primary { background: var(--primary-color); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 18px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
+        .how-it-works-section { padding: 80px 8%; text-align: center; background-color: var(--light-gray); }
+        .how-it-works-section h2 { font-size: 36px; margin-bottom: 50px; color: var(--dark-blue); }
+        .steps-container { display: flex; justify-content: space-around; gap: 30px; flex-wrap: wrap; }
+        .step-card { background: white; padding: 40px 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); max-width: 300px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .step-card:hover { transform: translateY(-10px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
+        .step-number { width: 50px; height: 50px; background: var(--primary-color); color: white; border-radius: 50%; display: grid; place-items: center; font-size: 24px; font-weight: 600; margin: 0 auto 20px; }
+        .step-card h3 { font-size: 20px; margin-bottom: 10px; color: var(--dark-blue); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">🎓 Career Compass</div>
+            <ul class="nav-links">
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li id="loginLink"><a href="login.html">Login</a></li>
+                <li id="signupLink"><a href="signup.html" class="btn-secondary">Sign Up</a></li>
+                <li id="profileLinkContainer" style="display: none;"><a id="profileLink" href="onboarding.html">Profile</a></li>
+                <li id="logoutLinkContainer" style="display: none;"><a id="logoutLink" href="#" class="btn-secondary">Logout</a></li>
+            </ul>
+        </nav>
+
+        <header class="hero">
+            <h1>Find Your Future: AI-Powered Career Guidance</h1>
+            <p class="subtitle">Stop the confusion. Get a personalized roadmap to a successful career based on your unique skills, interests, and personality.</p>
+            <a href="signup.html" class="btn-primary">Get Started for Free</a>
+        </header>
+    </div>
+
+    <section id="how-it-works" class="how-it-works-section">
+        <h2>How It Works</h2>
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Build Your Profile</h3>
+                <p>Tell us about your academics, passions, and take a quick aptitude assessment.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Get AI Insights</h3>
+                <p>Our AI analyzes your profile to recommend top career paths and identify skill gaps.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Create Your Roadmap</h3>
+                <p>Receive a step-by-step learning plan with curated resources to prepare you for your dream job.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            
+            const loginLink = document.getElementById('loginLink');
+            const signupLink = document.getElementById('signupLink');
+            const profileLinkContainer = document.getElementById('profileLinkContainer');
+            const logoutLinkContainer = document.getElementById('logoutLinkContainer');
+            const profileLink = document.getElementById('profileLink');
+            const logoutLink = document.getElementById('logoutLink');
+
+            if (token) {
+                // User is logged in
+                loginLink.style.display = 'none';
+                signupLink.style.display = 'none';
+                profileLinkContainer.style.display = 'list-item';
+                logoutLinkContainer.style.display = 'list-item';
+            } else {
+                // User is logged out
+                loginLink.style.display = 'list-item';
+                signupLink.style.display = 'list-item';
+                profileLinkContainer.style.display = 'none';
+                logoutLinkContainer.style.display = 'none';
+            }
+
+            // --- NEW LOGIC FOR PROFILE LINK ---
+            profileLink.addEventListener('click', async (e) => {
+                e.preventDefault(); // Stop the link from navigating immediately
+                profileLink.textContent = 'Loading...';
+
+                try {
+                    // Check the user's profile status from the server
+                    const statusRes = await fetch("http://localhost:3000/profile/status", {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (!statusRes.ok) throw new Error("Could not verify profile status.");
+
+                    const statusResult = await statusRes.json();
+                    
+                    // Redirect based on the status
+                    if (statusResult.hasCompletedProfile) {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        window.location.href = "profile-setup.html";
+                    }
+
+                } catch (error) {
+                    console.error("Profile link error:", error);
+                    // If the token is invalid or expired, the API call will fail.
+                    // A good fallback is to log the user out and send them to the login page.
+                    alert("Your session may have expired. Please log in again.");
+                    localStorage.removeItem('authToken');
+                    window.location.href = "login.html";
+                }
+            });
+            // --- END OF NEW LOGIC ---
+
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                alert('You have been successfully logged out.');
+                window.location.reload(); // Reload the page to update the nav links
+            });
+        });
+    </script>
+</body>
+</html>
